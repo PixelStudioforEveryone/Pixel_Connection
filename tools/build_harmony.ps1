@@ -1,11 +1,18 @@
 param(
     [Parameter(Mandatory=$true)][string]$DevEcoHome,
-    [string]$LocalSigningProfile
+    [string]$LocalSigningProfile,
+    [ValidateSet('debug','release')][string]$BuildMode = 'debug'
 )
 $ErrorActionPreference = 'Stop'
 $pxcProjectPath = [IO.Path]::GetFullPath((Join-Path $PSScriptRoot '..\Pixel_Connection_HOS'))
 $pxcPublicProfile = Join-Path $pxcProjectPath 'build-profile.json5'
+if (-not (Test-Path -LiteralPath $pxcPublicProfile)) {
+    Copy-Item -LiteralPath (Join-Path $pxcProjectPath 'build-profile.example.json5') -Destination $pxcPublicProfile
+}
 $pxcPublicBytes = [IO.File]::ReadAllBytes($pxcPublicProfile)
+if ($LocalSigningProfile) {
+    $LocalSigningProfile = (Resolve-Path -LiteralPath $LocalSigningProfile).Path
+}
 $env:DEVECO_SDK_HOME = Join-Path $DevEcoHome 'sdk'
 $env:JAVA_HOME = Join-Path $DevEcoHome 'jbr'
 $env:PATH = (Join-Path $env:JAVA_HOME 'bin') + ';' + $env:PATH
@@ -20,7 +27,7 @@ try {
     }
     & $pxcOhpmPath install
     if ($LASTEXITCODE -ne 0) { throw 'ohpm install failed' }
-    & $pxcNodePath $pxcHvigorPath --mode module -p product=default -p module=pixel_connection@default -p buildMode=debug assembleHap --no-daemon
+    & $pxcNodePath $pxcHvigorPath --mode module -p product=default -p module=pixel_connection@default -p "buildMode=$BuildMode" assembleHap --no-daemon
     if ($LASTEXITCODE -ne 0) { throw 'HarmonyOS build failed' }
 } finally {
     [IO.File]::WriteAllBytes($pxcPublicProfile, $pxcPublicBytes)

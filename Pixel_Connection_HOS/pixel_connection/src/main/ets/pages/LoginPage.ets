@@ -6,7 +6,8 @@ import {
   pxcSettings,
   PXC_DEFAULT_API,
   PXC_DEFAULT_WS,
-  PXC_DEFAULT_DEVICE_NAME
+  PXC_DEFAULT_DEVICE_NAME,
+  pxcIsExampleServerAddress
 } from '../common/PxcSettings';
 import { PxcLoginResultJson, PxcRegisterResultJson } from '../model/PxcModels';
 
@@ -89,6 +90,11 @@ export struct LoginPage {
       this.errorText = '账号 API 与信令服务器地址不能为空';
       return false;
     }
+    if (pxcIsExampleServerAddress(api) || pxcIsExampleServerAddress(ws)) {
+      this.errorText = '请先在高级设置中将示例地址替换为自己的服务器地址';
+      this.advancedOpen = true;
+      return false;
+    }
     pxcSettings.putString('apiUrl', api);
     pxcSettings.putString('wsUrl', ws);
     const hostContext: Context | undefined = this.getUIContext().getHostContext();
@@ -140,7 +146,7 @@ export struct LoginPage {
 
   build() {
     Column({ space: 12 }) {
-      Text('Pixel Connection')
+      Text('Pixel远程')
         .fontSize(28)
         .fontWeight(FontWeight.Bold)
         .margin({ top: 48 })
@@ -248,6 +254,10 @@ export struct LoginPage {
 
       if (this.advancedOpen) {
         Column({ space: 8 }) {
+          Text('示例地址不能直接使用，请填写自建服务器的 API 与信令地址')
+            .fontSize(12)
+            .fontColor('#667085')
+            .width('100%')
           Text('账号 API')
             .fontSize(12)
             .fontColor('#666666')

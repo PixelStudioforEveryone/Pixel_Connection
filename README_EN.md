@@ -6,7 +6,11 @@
 
 **Free, open-source remote desktop software you can host yourself.** Windows, Linux and HarmonyOS share the account, device identity and connection protocols. Original code is licensed under **GPL-3.0-only**. Hosting, domain and network traffic costs are paid by the operator.
 
-[GitHub](https://github.com/sxd15963949546/Pixel_Connection) · [Self-hosting guide](docs/SERVER_BUILD_EN.md) · [Client builds (Chinese)](docs/CLIENT_BUILD.md) · [Usage guide (Chinese)](docs/USAGE.md) · [Security (Chinese)](SECURITY.md)
+**Up to 4K / 60 fps settings, with P2P preferred.** These are configurable limits; actual resolution and frame rate depend on the remote screen, hardware and network.
+
+[GitHub](https://github.com/PixelStudioforEveryone/Pixel_Connection) · [Self-hosting guide](docs/SERVER_BUILD_EN.md) · [Client builds (Chinese)](docs/CLIENT_BUILD.md) · [Usage guide (Chinese)](docs/USAGE.md) · [Security (Chinese)](SECURITY.md)
+
+[Download installers](https://github.com/PixelStudioforEveryone/Pixel_Connection/releases) · [Installation notes](docs/DOWNLOADS.md) · [HarmonyOS Pixel远程 release preparation](Pixel_Connection_HOS/RELEASE.md)
 
 ## Interface preview
 

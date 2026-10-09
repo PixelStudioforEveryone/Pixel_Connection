@@ -33,7 +33,7 @@ PC 已集成本地服务，使用 `pxc-client --server`，客户端安装包无�
 
 ## HarmonyOS 手机与大屏
 
-DevEco Studio 打开 `Pixel_Connection_HOS/`，匹配项目 modelVersion／SDK。当前目标 SDK 26.0.0，兼容 6.1.1(24)，按实际安装情况调整并验证。原生 ABI 为 `arm64-v8a` 和 `x86_64`。
+先将 `Pixel_Connection_HOS/build-profile.example.json5` 复制为同目录的 `build-profile.json5`，再用 DevEco Studio 打开 `Pixel_Connection_HOS/`，匹配项目 modelVersion／SDK。真实 build profile 由 Git 忽略，公开模板不含签名材料。当前目标 SDK 26.0.0，兼容 6.1.1(24)，按实际安装情况调整并验证。原生 ABI 为 `arm64-v8a` 和 `x86_64`。
 
 ### OpenSSL 静态依赖
 
@@ -53,7 +53,7 @@ bash Pixel_Connection_HOS/third_party/openssl/build_openssl_linux.sh
 
 1. 在 DevEco 同步 SDK 和 ohpm 依赖。
 2. 使用自己的开发者账户／设备生成调试签名，或自己的发布证书和 profile。
-3. 公开 build profile 不含签名材料，可生成未签名 HAP；安装真机需自行签名。
+3. 公开 build profile 模板不含签名材料，可生成未签名 HAP；安装真机需自行签名。
 
 Windows 辅助脚本：
 
@@ -62,6 +62,8 @@ Windows 辅助脚本：
 ```
 
 已有完整私有 profile 时使用 `-LocalSigningProfile "私有文件的实际路径"`。脚本仅构建期间使用它，退出后还原公开 profile；私有文件保存在仓库外或已忽略目录，不提交、不打印内容。
+
+发布构建添加 `-BuildMode release`。签名 profile 的产品配置必须引用自己的 `signingConfig`。应用声明剪贴板及 Documents／Download／Desktop 目录权限；目录权限用于支持的 2in1 设备。受限的 `READ_PASTEBOARD`、`READ_WRITE_DESKTOP_DIRECTORY` 还需在华为申请并重新生成包含授权的发布 profile；源码声明不等于签名授权。文件选择器的现有文件访问流程保留。
 
 HAP 在 `Pixel_Connection_HOS/pixel_connection/build/default/outputs/default/`。通过 SDK HDC 安装，自行验证 ABI 和签名权限。HarmonyOS 当前只做控制端，不提供被控桌面／本地服务器。
 

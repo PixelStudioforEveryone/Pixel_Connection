@@ -1,9 +1,14 @@
 import { preferences } from '@kit.ArkData';
 
-export const PXC_DEFAULT_API: string = 'http://127.0.0.1:29910';
-export const PXC_DEFAULT_WS: string = 'ws://127.0.0.1:9910';
+// Reserved example domain: users must configure their own server before login.
+export const PXC_DEFAULT_API: string = 'https://remote.example.com';
+export const PXC_DEFAULT_WS: string = 'wss://remote.example.com/signal';
 export const PXC_DEFAULT_TURN: string = '';
 export const PXC_DEFAULT_DEVICE_NAME: string = 'HarmonyOS 设备';
+
+export function pxcIsExampleServerAddress(address: string): boolean {
+  return /^(?:https?|wss?):\/\/(?:[a-z0-9-]+\.)*example\.(?:com|net|org)(?::[0-9]+)?(?:[/?#]|$)/.test(address.trim().toLowerCase());
+}
 
 const PREF_NAME: string = 'pxc_settings';
 

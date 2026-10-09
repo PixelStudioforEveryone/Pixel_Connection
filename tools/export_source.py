@@ -18,7 +18,7 @@ PUBLIC_FILES = {'.gitignore', '.gitattributes', 'CMakeLists.txt', 'README.md', '
                 'THIRD_PARTY_NOTICES.md', 'SECURITY.md', 'architecture.html'}
 ALLOWED = {'.cpp', '.h', '.hpp', '.c', '.cmake', '.md', '.txt', '.json', '.json5',
            '.ets', '.ts', '.d.ts', '.xml', '.svg', '.png', '.ico', '.qrc', '.rc',
-           '.sh', '.py', '.ps1', '.html', '.properties', '.pem', '.example'}
+           '.sh', '.py', '.ps1', '.html', '.properties', '.pem', '.example', '.nsi', '.desktop'}
 CA_BUNDLE = 'Pixel_Connection_HOS/pixel_connection/src/main/resources/rawfile/pxc-ca-bundle.pem'
 PATTERNS = {
     'private key': r'-----BEGIN (?:OPENSSH |RSA |EC |ENCRYPTED )?PRIVATE KEY-----',
@@ -105,11 +105,20 @@ def main():
             raise SystemExit('Required public file missing: ' + required)
     findings = audit_files(ROOT, names)
     report = ROOT / 'artifacts' / 'open-source-audit.json'
-    report.write_text(json.dumps({'files': len(names), 'findings': findings}, indent=2), encoding='utf-8')
+    report.write_text(json.dumps({'files': len(names), 'names': names, 'findings': findings}, indent=2), encoding='utf-8')
     if findings:
         print(json.dumps(findings, indent=2))
         raise SystemExit('Publication blocked: sensitive findings')
     output.mkdir(parents=True, exist_ok=True)
+    if args.refresh:
+        # Remove obsolete exported source files, preserving snapshot Git metadata.
+        # The destination is already constrained to artifacts/ above.
+        for path in output.rglob('*'):
+            if not path.is_file():
+                continue
+            name = path.relative_to(output).as_posix()
+            if name not in names and (name in PUBLIC_FILES or Path(name).parts[0] in PUBLIC_ROOTS):
+                path.unlink()
     for name in names:
         destination = output / name
         destination.parent.mkdir(parents=True, exist_ok=True)

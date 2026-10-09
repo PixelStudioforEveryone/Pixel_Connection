@@ -12,6 +12,8 @@ PixelConnection 免费开源，可在自己的电脑或云服务器运行。服�
 
 账号数据库属于运行后端的机器。新建服务器使用独立账号库，账号不会自动跨服务器同步。保留原账号需要迁移原数据库，或保留原后端并使用网关。
 
+服务入口在 [`server/standalone_main.cpp`](../server/standalone_main.cpp)，运行实现为 [`server/main.cpp`](../server/main.cpp)；HTTP 账号接口、认证、数据库和在线设备表均包含在 `server/`。PC 客户端的 `--server` 入口复用同一实现。coturn 与 Caddy 是单独安装的开源服务，仓库提供配置模板。
+
 ## 2. Linux 无界面服务器构建
 
 Ubuntu／Debian：
@@ -19,7 +21,7 @@ Ubuntu／Debian：
 ```bash
 sudo apt update
 sudo apt install -y git cmake build-essential pkg-config libssl-dev zlib1g-dev
-git clone https://github.com/sxd15963949546/Pixel_Connection.git
+git clone https://github.com/PixelStudioforEveryone/Pixel_Connection.git
 cd Pixel_Connection
 cmake -S . -B build -DCMAKE_BUILD_TYPE=Release \
   -DPXC_BUILD_QT_CLIENT=OFF -DPXC_BUILD_STANDALONE_SERVER=ON
@@ -35,7 +37,7 @@ Alibaba Cloud Linux／RHEL 系发行版所需包通常为 `git cmake gcc gcc-c++
 安装 Visual Studio 2022 的“使用 C++ 的桌面开发”、CMake、Git、匹配 x64 工具链的 OpenSSL 和 zlib 开发文件。在开发者 PowerShell 中运行，路径按自己的安装调整：
 
 ```powershell
-git clone https://github.com/sxd15963949546/Pixel_Connection.git
+git clone https://github.com/PixelStudioforEveryone/Pixel_Connection.git
 cd Pixel_Connection
 cmake -S . -B build -G "Visual Studio 17 2022" -A x64 `
   -DPXC_BUILD_QT_CLIENT=OFF -DPXC_BUILD_STANDALONE_SERVER=ON `
@@ -157,3 +159,39 @@ ssh -NT -o ExitOnForwardFailure=yes -o ServerAliveInterval=20 \
 - 能登录但无画面时检查 ICE／TURN 和设备在线状态；API 可达不代表远控通道可达。
 
 参考：[Caddy 反向代理](https://caddyserver.com/docs/caddyfile/directives/reverse_proxy)、[coturn 模板](https://github.com/coturn/coturn/blob/master/examples/etc/turnserver.conf)、[OpenSSH](https://www.openssh.com/manual.html)。
+
+## 8. 运行参数与维护
+
+`pxc-server --help` 查看参数；集成程序使用 `pxc-client --server --help`。
+
+| 参数 | 默认值／用途 |
+|---|---|
+| `--db <file>` | `pxc-accounts.db`，相对路径基于工作目录；长期运行用固定绝对路径 |
+| `--api-port <n>` / `--port <n>` | 账号 API 29910／WebSocket 信令 9910 |
+| `--v4 <addr>` / `--v6 <addr>` | `0.0.0.0`／`::`；公网代理后建议回环监听 |
+| `--no-v4` / `--no-v6` | 关闭对应协议族监听 |
+| `--advertise-api <url>` / `--advertise-ws <url>` | 成对配置可分享入口；与实际监听地址区分 |
+| `--no-register` | 关闭新账号注册，已有账号仍可登录 |
+| `--trust-loopback-proxy` | 只可在回环监听时使用；代理必须覆盖来源头 |
+| `--allow-plain-http` | 后端默认明文监听；公网加密由 HTTPS／WSS 反代提供 |
+| `--no-plain-http` | 当前无内置 TLS listener，指定此参数会拒绝启动；不能用它替代反代 |
+
+服务管理与日志：
+
+```bash
+sudo systemctl status pxc-server
+sudo journalctl -u pxc-server -n 100 --no-pager
+sudo systemctl restart pxc-server
+```
+
+服务器没有预置管理员密码。账号由客户端注册；TURN 密码、SSH 密钥和 TLS 证书分别自行设置，互不替代。不得将账号数据库、设备身份或签名 profile 加入 Git。禁用注册前先完成自己的账号注册。更多防护实现见 [SECURITY.md](../SECURITY.md)。
+
+使用 Python 3 对新构建做隔离运行验证：
+
+```bash
+python3 tools/check_server.py ./build/server/pxc-server
+# 集成到 Qt 客户端的同一后端：
+python3 tools/check_server.py ./build/apps/client/pxc-client --integrated
+```
+
+Windows 同样使用 `python tools/check_server.py 路径/pxc-server.exe`，集成程序加 `--integrated`。检查使用随机临时账号、回环随机端口和临时数据库，不连接正在运行的服务器，不输出密码或 token；验证健康、公开地址、注册登录、认证、注销、信令 WebSocket 和重启后的账号／服务器身份保持。

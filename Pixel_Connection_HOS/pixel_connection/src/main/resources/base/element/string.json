@@ -1,6 +1,21 @@
 {
   "string": [
-    { "name": "clipboard_permission_reason", "value": "远程连接时同步手机和电脑之间复制的文字" },
+    {
+      "name": "documents_permission_reason",
+      "value": "在电脑设备上选择或保存远程传输的文档文件"
+    },
+    {
+      "name": "download_permission_reason",
+      "value": "在电脑设备上选择下载文件或保存远程接收的文件"
+    },
+    {
+      "name": "desktop_permission_reason",
+      "value": "在电脑设备上选择或保存桌面中的远程传输文件"
+    },
+    {
+      "name": "clipboard_permission_reason",
+      "value": "远程连接时同步手机和电脑之间复制的文字"
+    },
     {
       "name": "module_desc",
       "value": "module description"
@@ -11,7 +26,7 @@
     },
     {
       "name": "Pixel_connectionAbility_label",
-      "value": "label"
+      "value": "Pixel远程"
     }
   ]
 }

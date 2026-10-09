@@ -47,6 +47,7 @@ identity.json
 *.pfx
 *.p7b
 *.cer
+*.csr
 *.pem
 !Pixel_Connection_HOS/pixel_connection/src/main/resources/rawfile/pxc-ca-bundle.pem
 *.exe
@@ -72,6 +73,10 @@ identity.json
 /docs/WINDOWS_TASKS.md
 /.zcodeignore
 /Pixel_Connection_HOS/third_party/*
+/Pixel_Connection_HOS/build-profile.json5
+/Pixel_Connection_HOS/material/
+/Pixel_Connection_HOS/发布用图片/
+/src/icon2.png
 !/Pixel_Connection_HOS/third_party/openssl/
 /Pixel_Connection_HOS/third_party/openssl/*
 !/Pixel_Connection_HOS/third_party/openssl/build_openssl_linux.sh

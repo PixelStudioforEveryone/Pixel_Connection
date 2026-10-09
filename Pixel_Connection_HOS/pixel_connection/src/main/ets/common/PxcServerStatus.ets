@@ -1,4 +1,5 @@
 import { http } from '@kit.NetworkKit';
+import { pxcIsExampleServerAddress } from './PxcSettings';
 
 interface PxcServerIdentity {
   product: string;
@@ -10,6 +11,7 @@ interface PxcServerIdentity {
 interface PxcHealthResponse { status: string; api: string; server?: PxcServerIdentity; }
 
 export async function pxcServerDescription(apiUrl: string): Promise<string> {
+  if (pxcIsExampleServerAddress(apiUrl)) { return '当前为示例服务器，请在高级设置填写自己的账号 API 和信令地址'; }
   if (!/^https?:\/\//.test(apiUrl)) { return '请输入有效的账号 API 地址'; }
   const client = http.createHttp();
   try {

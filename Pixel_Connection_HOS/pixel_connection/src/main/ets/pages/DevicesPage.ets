@@ -345,7 +345,7 @@ export struct DevicesPage {
       Row() {
         if (this.wide) {
           Column({ space: 12 }) {
-            Row({ space: 10 }) { Image($r('app.media.pxc_app_icon')).width(28).height(28); Text('PixelConnection 远程').fontSize(16).fontWeight(FontWeight.Bold) }.width('100%').padding({ top: 16, bottom: 16 })
+            Row({ space: 10 }) { Image($r('app.media.pxc_app_icon')).width(28).height(28); Text('Pixel远程').fontSize(16).fontWeight(FontWeight.Bold) }.width('100%').padding({ top: 16, bottom: 16 })
             Text('我的设备').fontSize(12).fontColor('#7c899c').width('100%')
             Scroll() {
               Column({ space: 6 }) {

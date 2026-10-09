@@ -14,6 +14,8 @@ PixelConnection is free and open source. You can run the account and signaling s
 
 The account database belongs to the backend, not to a client URL. A new backend has a separate account database. To preserve existing accounts, migrate the database or keep that backend behind a gateway. Keep a recoverable backup before moving it.
 
+The executable entry point is [server/standalone_main.cpp](../server/standalone_main.cpp); [server/main.cpp](../server/main.cpp) implements the runtime. Account HTTP APIs, authentication, SQLite storage and the online-device registry are all included in `server/`. The PC client's `--server` entry uses the same implementation. Caddy and coturn are separately installed open-source services with templates in `deploy/`.
+
 ## Linux headless build
 
 Ubuntu / Debian:
@@ -21,7 +23,7 @@ Ubuntu / Debian:
 ```bash
 sudo apt update
 sudo apt install -y git cmake build-essential pkg-config libssl-dev zlib1g-dev
-git clone https://github.com/sxd15963949546/Pixel_Connection.git
+git clone https://github.com/PixelStudioforEveryone/Pixel_Connection.git
 cd Pixel_Connection
 cmake -S . -B build -DCMAKE_BUILD_TYPE=Release \
   -DPXC_BUILD_QT_CLIENT=OFF -DPXC_BUILD_STANDALONE_SERVER=ON
@@ -37,7 +39,7 @@ The executable is `build/server/pxc-server`. Initial CMake configuration fetches
 Install Visual Studio 2022 with Desktop development with C++, CMake, Git, and x64 OpenSSL / zlib development files compatible with the toolchain. Run these commands in a developer PowerShell and adjust the library paths:
 
 ```powershell
-git clone https://github.com/sxd15963949546/Pixel_Connection.git
+git clone https://github.com/PixelStudioforEveryone/Pixel_Connection.git
 cd Pixel_Connection
 cmake -S . -B build -G "Visual Studio 17 2022" -A x64 `
   -DPXC_BUILD_QT_CLIENT=OFF -DPXC_BUILD_STANDALONE_SERVER=ON `
@@ -167,3 +169,36 @@ Use systemd to keep the tunnel running. The LAN host must remain powered on in t
 - If login works but no video appears, inspect ICE / TURN and peer availability. API reachability alone does not establish that the remote desktop path works.
 
 See also: [Caddy reverse proxy](https://caddyserver.com/docs/caddyfile/directives/reverse_proxy), [coturn configuration example](https://github.com/coturn/coturn/blob/master/examples/etc/turnserver.conf), [OpenSSH manuals](https://www.openssh.com/manual.html), and [the project's security notes (Chinese)](../SECURITY.md).
+
+## Runtime options and maintenance
+
+Run `pxc-server --help`, or `pxc-client --server --help` for the integrated backend.
+
+| Option | Default / purpose |
+|---|---|
+| `--db <file>` | `pxc-accounts.db`, relative to the working directory; use a fixed absolute path for a service |
+| `--api-port <n>` / `--port <n>` | Account API 29910 / WebSocket signaling 9910 |
+| `--v4 <addr>` / `--v6 <addr>` | `0.0.0.0` / `::`; bind loopback behind a public proxy |
+| `--no-v4` / `--no-v6` | Disable the corresponding IP family |
+| `--advertise-api <url>` / `--advertise-ws <url>` | Supply both shareable URLs; these do not change the listeners |
+| `--no-register` | Disable new account registration; existing accounts can still log in |
+| `--trust-loopback-proxy` | Allowed only on loopback listeners; the proxy must overwrite source headers |
+| `--allow-plain-http` | Plain backend listeners are the default; use HTTPS / WSS at the public proxy |
+| `--no-plain-http` | Refuses startup because there is currently no built-in TLS listener; this does not replace a proxy |
+
+```bash
+sudo systemctl status pxc-server
+sudo journalctl -u pxc-server -n 100 --no-pager
+sudo systemctl restart pxc-server
+```
+
+There is no preset administrator password. Register accounts through a client before disabling registration. Generate TURN credentials, SSH keys and TLS certificates separately. Keep account databases, device identities and signing profiles outside Git.
+
+With Python 3, validate a new build without using any existing server or account:
+
+```bash
+python3 tools/check_server.py ./build/server/pxc-server
+python3 tools/check_server.py ./build/apps/client/pxc-client --integrated
+```
+
+On Windows, use `python tools/check_server.py path/to/pxc-server.exe`, adding `--integrated` for `pxc-client.exe`. The check uses random temporary credentials, loopback ports and a disposable database; it prints no password or token. It verifies health, advertised addresses, registration, login, authorization, logout, the signaling WebSocket and account/server identity persistence across restart.

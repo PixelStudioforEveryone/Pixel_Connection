@@ -155,7 +155,7 @@ export struct SettingsContent {
       Scroll() {
         Column({ space: 14 }) {
           if (this.section === '常规') {
-            Text(this.username === '' ? 'Pixel Connection' : `当前账号：${this.username}`).fontSize(16).width('100%')
+            Text(this.username === '' ? 'Pixel远程' : `当前账号：${this.username}`).fontSize(16).width('100%')
             TextInput({ text: this.deviceName, placeholder: '本机名称' }).onChange((v: string) => { this.deviceName = v; })
             Text('鸿蒙客户端只负责控制其他设备，不接收桌面控制请求。').fontSize(13).fontColor('#7c899c').width('100%')
             this.SettingSwitch('加载设备壁纸', '仅连接已记住密钥的在线电脑，缓存真实桌面壁纸', this.previewEnabled,

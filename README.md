@@ -6,7 +6,11 @@
 
 **免费开源、可自行搭建的跨端远程桌面。** Windows、Linux 与 HarmonyOS 共用账号、设备身份和连接协议。源码采用 **GPL-3.0-only**；服务器、域名及流量费用由部署者承担。
 
-[GitHub 仓库](https://github.com/sxd15963949546/Pixel_Connection) · [服务器构建](docs/SERVER_BUILD.md) · [三端客户端构建](docs/CLIENT_BUILD.md) · [内网与公网使用](docs/USAGE.md) · [安全说明](SECURITY.md)
+**最高 4K · 60 帧配置，P2P 优先直连。** 画质与帧率为可选上限，实际效果取决于被控屏幕、设备与网络。
+
+[GitHub 仓库](https://github.com/PixelStudioforEveryone/Pixel_Connection) · [服务器构建](docs/SERVER_BUILD.md) · [三端客户端构建](docs/CLIENT_BUILD.md) · [内网与公网使用](docs/USAGE.md) · [安全说明](SECURITY.md)
+
+[下载安装包](https://github.com/PixelStudioforEveryone/Pixel_Connection/releases) · [安装说明](docs/DOWNLOADS.md) · [鸿蒙 Pixel远程发布准备](Pixel_Connection_HOS/RELEASE.md)
 
 ## 界面预览
 
