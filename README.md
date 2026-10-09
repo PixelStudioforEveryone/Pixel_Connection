@@ -1,8 +1,35 @@
 # PixelConnection
 
+<img src="src/icon.png" alt="PixelConnection logo" width="72" />
+
+**简体中文** · [English](README_EN.md)
+
 **免费开源、可自行搭建的跨端远程桌面。** Windows、Linux 与 HarmonyOS 共用账号、设备身份和连接协议。源码采用 **GPL-3.0-only**；服务器、域名及流量费用由部署者承担。
 
 [GitHub 仓库](https://github.com/sxd15963949546/Pixel_Connection) · [服务器构建](docs/SERVER_BUILD.md) · [三端客户端构建](docs/CLIENT_BUILD.md) · [内网与公网使用](docs/USAGE.md) · [安全说明](SECURITY.md)
+
+## 界面预览
+
+Windows 与 Linux 采用一致的侧栏和设备详情布局：选择设备后可查看壁纸预览，进入桌面或独立打开文件传输。
+
+| Windows | Linux / Ubuntu |
+|---|---|
+| <img src="docs/images/windows-device.png" alt="Windows 设备详情：侧栏、壁纸预览与连接入口" width="440" /> | <img src="docs/images/linux-device.png" alt="Ubuntu 设备详情：侧栏、壁纸预览与连接入口" width="440" /> |
+
+文件传输提供本地／远端双栏目录和任务列表；未选中文件时，发送与下载按钮保持禁用。
+
+<img src="docs/images/file-transfer.png" alt="文件传输：本地与远端目录、禁用的发送按钮、传输任务列表" width="640" />
+
+以上为使用演示设备、测试壁纸和临时文件捕获的应用界面，展示布局，不代表传输速度或公网性能。截图中的部分预留入口尚未实现，功能范围见下方说明。
+
+<details>
+<summary>查看 Windows、Linux 与 HarmonyOS 三端宣传图</summary>
+
+<img src="docs/images/overview.png" alt="PixelConnection 三端宣传图：免费开源、远程桌面自己搭建" width="480" />
+
+宣传图使用应用界面参考生成，属于视觉介绍；实际界面请参考上方截图和当前构建。HarmonyOS 手机／大屏目前作为控制端。
+
+</details>
 
 ## 三端支持
 
@@ -46,9 +73,9 @@ apps/client/                 Windows／Linux Qt 客户端
 src/ 与 include/pxc/         三端共享 C++ 核心与 PC 平台实现
 server/                      账号 API、SQLite 与 WebSocket 信令
 Pixel_Connection_HOS/        HarmonyOS ArkTS UI、NAPI 与原生解码
- deploy/                     网关、中继和服务管理模板
- docs/                       构建与使用说明
- tests/                      密码、会话认证和视频协议测试
+deploy/                      网关、中继和服务管理模板
+docs/                        构建与使用说明，含配图
+tests/                       密码、会话认证和视频协议测试
 ```
 
 无界面服务器不需要 Qt：

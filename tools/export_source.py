@@ -14,7 +14,7 @@ from urllib.parse import urlsplit
 ROOT = Path(__file__).resolve().parents[1]
 PUBLIC_ROOTS = {'apps', 'cmake', 'include', 'server', 'src', 'tests', 'tools',
                 'deploy', 'docs', 'Pixel_Connection_HOS'}
-PUBLIC_FILES = {'.gitignore', '.gitattributes', 'CMakeLists.txt', 'README.md', 'LICENSE',
+PUBLIC_FILES = {'.gitignore', '.gitattributes', 'CMakeLists.txt', 'README.md', 'README_EN.md', 'LICENSE',
                 'THIRD_PARTY_NOTICES.md', 'SECURITY.md', 'architecture.html'}
 ALLOWED = {'.cpp', '.h', '.hpp', '.c', '.cmake', '.md', '.txt', '.json', '.json5',
            '.ets', '.ts', '.d.ts', '.xml', '.svg', '.png', '.ico', '.qrc', '.rc',
@@ -79,7 +79,7 @@ def source_files():
         path = Path(name)
         if name not in PUBLIC_FILES and path.parts[0] not in PUBLIC_ROOTS:
             continue
-        if name not in PUBLIC_FILES and path.name != 'CMakeLists.txt' and path.suffix.lower() not in ALLOWED:
+        if name not in PUBLIC_FILES and path.name not in {'CMakeLists.txt', '.gitignore', '.gitattributes'} and path.suffix.lower() not in ALLOWED:
             continue
         # Tracked files can remain ignored; exclude them explicitly too.
         ignored = subprocess.run(['git', 'check-ignore', '--no-index', '-q', name], cwd=ROOT)
