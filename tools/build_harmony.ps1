@@ -1,7 +1,8 @@
 param(
     [Parameter(Mandatory=$true)][string]$DevEcoHome,
     [string]$LocalSigningProfile,
-    [ValidateSet('debug','release')][string]$BuildMode = 'debug'
+    [ValidateSet('debug','release')][string]$BuildMode = 'debug',
+    [ValidateSet('hap','app')][string]$PackageType = 'hap'
 )
 $ErrorActionPreference = 'Stop'
 $pxcProjectPath = [IO.Path]::GetFullPath((Join-Path $PSScriptRoot '..\Pixel_Connection_HOS'))
@@ -27,7 +28,11 @@ try {
     }
     & $pxcOhpmPath install
     if ($LASTEXITCODE -ne 0) { throw 'ohpm install failed' }
-    & $pxcNodePath $pxcHvigorPath --mode module -p product=default -p module=pixel_connection@default -p "buildMode=$BuildMode" assembleHap --no-daemon
+    if ($PackageType -eq 'app') {
+        & $pxcNodePath $pxcHvigorPath --mode project -p product=default -p "buildMode=$BuildMode" assembleApp --no-daemon
+    } else {
+        & $pxcNodePath $pxcHvigorPath --mode module -p product=default -p module=pixel_connection@default -p "buildMode=$BuildMode" assembleHap --no-daemon
+    }
     if ($LASTEXITCODE -ne 0) { throw 'HarmonyOS build failed' }
 } finally {
     [IO.File]::WriteAllBytes($pxcPublicProfile, $pxcPublicBytes)
