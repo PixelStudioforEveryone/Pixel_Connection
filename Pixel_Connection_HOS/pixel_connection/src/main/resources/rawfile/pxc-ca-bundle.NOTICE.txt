@@ -1,0 +1,7 @@
+pxc-ca-bundle.pem contains the Mozilla CA store converted by curl.
+Source: https://curl.se/ca/cacert.pem
+Documentation: https://curl.se/docs/caextract.html
+License: Mozilla Public License 2.0, https://www.mozilla.org/MPL/2.0/
+Downloaded and SHA256 checked against curl's published checksum on 2026-10-08.
+SHA256: a41b5d356aea97a529fe27e0f7316d2f9d946d75927476cf9cf1b90637d00505
+Refresh the bundle and this checksum before future releases when Mozilla roots change.

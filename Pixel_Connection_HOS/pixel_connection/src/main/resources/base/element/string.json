@@ -1,0 +1,17 @@
+{
+  "string": [
+    { "name": "clipboard_permission_reason", "value": "远程连接时同步手机和电脑之间复制的文字" },
+    {
+      "name": "module_desc",
+      "value": "module description"
+    },
+    {
+      "name": "Pixel_connectionAbility_desc",
+      "value": "description"
+    },
+    {
+      "name": "Pixel_connectionAbility_label",
+      "value": "label"
+    }
+  ]
+}

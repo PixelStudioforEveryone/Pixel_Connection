@@ -1,0 +1,11 @@
+{
+  "name": "pixel_connection",
+  "version": "1.0.0",
+  "description": "Please describe the basic information.",
+  "main": "",
+  "author": "",
+  "license": "",
+  "dependencies": {
+    "libpxc_hos.so": "file:./src/main/cpp/types/libpxc_hos"
+  }
+}

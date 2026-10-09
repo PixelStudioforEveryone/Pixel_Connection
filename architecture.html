@@ -1,0 +1,32 @@
+<!doctype html>
+<html lang="zh-CN"><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>PixelConnection 架构</title>
+<style>body{font:16px/1.8 system-ui,sans-serif;color:#17243c;background:#f5f7fb;margin:auto;max-width:1100px;padding:36px}article{background:white;border-radius:18px;padding:32px}h1,h2{line-height:1.3}table{width:100%;border-collapse:collapse}td,th{border:1px solid #dce3ef;padding:10px;text-align:left}code{background:#edf2fa;padding:2px 6px;border-radius:4px}a{color:#285bd4}pre{white-space:pre-wrap;background:#edf2fa;padding:20px;border-radius:12px}</style>
+<article><h1>PixelConnection 架构</h1><p>三端源码公开版 · GPL-3.0-only · 不含私人服务器、账号和签名材料。</p>
+<p><a href="README.md">项目说明</a> · <a href="docs/SERVER_BUILD.md">服务器构建</a> · <a href="docs/CLIENT_BUILD.md">三端构建</a> · <a href="SECURITY.md">安全边界</a></p>
+<h2>组件与链路</h2><pre>Windows Qt / Linux Qt / HarmonyOS ArkTS + NAPI
+       │ HTTPS 账号 API       │ WSS 信令
+       └──────────┬───────────┘
+         账号与信令（SQLite + IXWebSocket）
+       双端交换设备身份、SDP 和 ICE
+                    │
+       WebRTC DataChannel：ICE → DTLS → SCTP
+       直连优先；受 NAT 限制时 TURN UDP 中继
+                    │
+       HMAC 会话认证 → 视频 / 输入 / 壁纸 / 剪贴板 / 文件</pre>
+<p>账号密码、设备验证码、Ed25519 私钥、TURN 凭据和 SSH 密钥用途独立。账号服务不接触设备私钥或验证码原文。验证码校验绑定 nonce 与 DTLS 指纹，认证后才处理媒体、输入和文件。</p>
+<h2>源码结构</h2><table><tr><th>目录</th><th>职责</th></tr>
+<tr><td>apps/client</td><td>PC UI、会话控制器、浮窗、文件、壁纸、剪贴板隔离读取和视频收发</td></tr>
+<tr><td>src / include/pxc</td><td>身份、scrypt、HMAC、账号 API、信令、WebRTC、视频协议与平台接口</td></tr>
+<tr><td>server</td><td>账号库、令牌、设备归属、签名挑战、在线注册、路由与服务器状态</td></tr>
+<tr><td>src/platform/windows</td><td>DXGI、Media Foundation、SendInput</td></tr>
+<tr><td>src/platform/linux</td><td>X11 或 GNOME RemoteDesktop／ScreenCast＋PipeWire、FFmpeg、XTest／GNOME 输入</td></tr>
+<tr><td>Pixel_Connection_HOS</td><td>ArkTS 手机／大屏布局、NAPI、系统解码、触摸、虚拟键鼠、文件与粘贴授权</td></tr>
+<tr><td>deploy / docs</td><td>通用网关／中继／systemd 模板及自建说明</td></tr></table>
+<h2>平台行为</h2><p>PC 可主控、被控和提供服务。鸿蒙当前只做主控和文件传输，进入鸿蒙桌面入口禁用。PC 被控时禁止出站控制，文件模式独立于桌面窗口。</p>
+<p>PC 集成 --server 模式，无界面部署可单独构建 pxc-server。设置页展示服务器声明的可分享地址，实际回环连接与分享地址分别处理。</p>
+<h2>视频与恢复</h2><p>设备卡片拉取主屏壁纸；控制画面按屏幕采集、缩放、H.264 编码与分片。帧／分片丢失后暂停依赖旧参考帧的 P 帧，静默请求关键帧并重建解码参考链。PipeWire 校验 offset、stride 和 size，拒绝截断数据。</p>
+<p>发送队列接受与发送失败分别判断，关键帧请求跨采集超时保留。异常断线清理注册和占用；主动断开立即更新 UI，废弃旧回调，支持重连。</p>
+<p>纯文本剪贴板走认证通道。PC 用同一 exe 的隔离进程读取系统剪贴板，约 1.5 秒超时，避免外部所有者阻塞 UI。鸿蒙登录密码／令牌用 Asset Store，系统粘贴读取通过官方控件授权。</p>
+<h2>自建与限制</h2><p>内网由 PC 提供账号／信令，媒体和文件优先 P2P。公网部署后端、HTTPS／WSS 与 TURN UDP；校园网可保留内网后端，通过主动 SSH 隧道连接云网关。</p>
+<p>尚不支持 TURN TCP／TLS、端口映射、富文本／图片剪贴板或鸿蒙被控桌面。PC 凭据存储、短默认验证码、长期 TURN 凭据和公网限流边界见安全说明。公开 CA 证书用于 TLS 验证，保留来源与许可。</p></article></html>

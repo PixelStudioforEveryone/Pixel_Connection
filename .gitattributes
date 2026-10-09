@@ -1,0 +1,10 @@
+* text=auto eol=lf
+*.sh text eol=lf
+*.py text eol=lf
+*.cmake text eol=lf
+*.md text eol=lf
+*.json5 text eol=lf
+*.ts text eol=lf
+*.ets text eol=lf
+*.png binary
+*.ico binary

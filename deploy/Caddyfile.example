@@ -1,0 +1,22 @@
+# Set PXC_DOMAIN to the hostname whose A/AAAA records point at this server.
+# Backend must use --v4 127.0.0.1 --v6 ::1 --trust-loopback-proxy.
+{$PXC_DOMAIN} {
+    @api path /api/*
+    handle @api {
+        request_body {
+            max_size 64KB
+        }
+        reverse_proxy 127.0.0.1:29910 {
+            header_up X-PXC-Client-IP {remote_host}
+        }
+    }
+    @signal path /signal
+    handle @signal {
+        reverse_proxy 127.0.0.1:9910 {
+            header_up X-PXC-Client-IP {remote_host}
+        }
+    }
+    handle {
+        respond "PixelConnection" 404
+    }
+}

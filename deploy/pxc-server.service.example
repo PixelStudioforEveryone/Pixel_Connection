@@ -1,0 +1,22 @@
+[Unit]
+Description=PixelConnection account and signaling server
+After=network-online.target
+Wants=network-online.target
+
+[Service]
+Type=simple
+User=pixelconnection
+Group=pixelconnection
+WorkingDirectory=/var/lib/pixelconnection
+ExecStart=/opt/pixelconnection/server/pxc-server --db /var/lib/pixelconnection/accounts.db --api-port 29910 --port 9910 --v4 127.0.0.1 --v6 ::1 --trust-loopback-proxy --advertise-api https://remote.example.com --advertise-ws wss://remote.example.com/signal
+Restart=on-failure
+RestartSec=5
+UMask=0077
+NoNewPrivileges=true
+PrivateTmp=true
+ProtectSystem=strict
+ProtectHome=true
+ReadWritePaths=/var/lib/pixelconnection
+
+[Install]
+WantedBy=multi-user.target

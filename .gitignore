@@ -1,0 +1,77 @@
+# Build output
+/build/
+
+# Local identity files (contain Ed25519 private keys)
+pxc-identity.json
+*.identity.json
+
+# IDE / OS
+.vscode/
+.idea/
+compile_commands.json
+*.swp
+*~
+
+# Workstation SSH key material
+key.txt
+key.txt.pub
+build-qt/
+build-wsl/
+
+# Local deployment credentials and account settings backups
+/artifacts/private-gateway/
+
+# Publication excludes all local builds, runtime state and private deployments.
+/artifacts/
+/dist/
+/reference/
+/post/
+**/build/
+**/build-*/
+**/.hvigor/
+**/.cache/
+**/.cxx/
+**/.idea/
+**/node_modules/
+**/oh_modules/
+**/__pycache__/
+local.properties
+*.db
+*.db-wal
+*.db-shm
+*.sqlite*
+identity.json
+*.key
+*.pub
+*.p12
+*.pfx
+*.p7b
+*.cer
+*.pem
+!Pixel_Connection_HOS/pixel_connection/src/main/resources/rawfile/pxc-ca-bundle.pem
+*.exe
+*.dll
+*.so
+*.a
+*.lib
+*.obj
+*.o
+*.hap
+*.app
+*.log
+*.tar
+*.zip
+*.local.json5
+*.private.json5
+.env
+.env.*
+!.env.example
+/docs/*.png
+/docs/pixel_connection_plan/
+/docs/REMOTE_SCREEN_FIX.md
+/docs/WINDOWS_TASKS.md
+/.zcodeignore
+/Pixel_Connection_HOS/third_party/*
+!/Pixel_Connection_HOS/third_party/openssl/
+/Pixel_Connection_HOS/third_party/openssl/*
+!/Pixel_Connection_HOS/third_party/openssl/build_openssl_linux.sh

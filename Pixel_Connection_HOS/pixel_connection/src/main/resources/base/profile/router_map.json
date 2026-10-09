@@ -1,0 +1,19 @@
+{
+  "routerMap": [
+    {
+      "name": "files",
+      "buildFunction": "FilesPageBuilder",
+      "pageSourceFile": "src/main/ets/pages/FilesPage.ets"
+    },
+    {
+      "name": "settings",
+      "buildFunction": "SettingsPageBuilder",
+      "pageSourceFile": "src/main/ets/pages/SettingsPage.ets"
+    },
+    {
+      "name": "remote",
+      "buildFunction": "RemotePageBuilder",
+      "pageSourceFile": "src/main/ets/pages/RemotePage.ets"
+    }
+  ]
+}

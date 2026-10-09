@@ -1,0 +1,35 @@
+# 复制到 /etc/systemd/system/ 前请先人工审核路径、用户、端口和现有服务。
+# 此模板不会自动安装、启用或启动任何服务。
+[Unit]
+Description=PixelConnection signaling and account API
+After=network-online.target
+Wants=network-online.target
+
+[Service]
+Type=simple
+User=pixelconnection
+Group=pixelconnection
+WorkingDirectory=/opt/pixel-connection
+ExecStart=/opt/pixel-connection/bin/pxc-server \
+  --port 29911 \
+  --api-port 29910 \
+  --db /var/lib/pixel-connection/accounts.db \
+  --v4 127.0.0.1 \
+  --no-v6
+Restart=on-failure
+RestartSec=5
+
+# 数据库和日志目录必须由 pixelconnection 用户拥有；不要让服务以 root 运行。
+UMask=0077
+NoNewPrivileges=true
+PrivateTmp=true
+ProtectSystem=strict
+ProtectHome=true
+ReadWritePaths=/var/lib/pixel-connection /var/log/pixel-connection
+
+# 限制可用能力；服务不需要原始网络、设备或提权。
+CapabilityBoundingSet=
+RestrictAddressFamilies=AF_UNIX AF_INET AF_INET6
+
+[Install]
+WantedBy=multi-user.target
